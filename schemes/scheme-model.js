@@ -4,7 +4,7 @@ const config = require("../knexfile.js");
 
 const db = knex(config.development);
 
-module.exports = { find, findById, findSteps, add, update, remove };
+module.exports = { find, findById, findSteps, add, update, remove, addStep };
 
 // -   `find()`:
 //     -   Calling find returns a promise that resolves to an array of all schemes in the database.
@@ -65,4 +65,15 @@ function remove(id) {
   return db("schemes")
     .where({ id })
     .del();
+}
+
+// - Add the following method to your API
+//   - `addStep(step, scheme_id)`: This method expects a step object and a scheme id.
+//  It inserts the new step into the database, correctly linking it to the intended scheme.
+//   - You may use `POST /api/schemes/:id/addStep` to test this method.
+function addStep(step, scheme_id) {
+  step.scheme_id = scheme_id;
+  return db("steps")
+    .insert(step)
+    .returning("*");
 }
